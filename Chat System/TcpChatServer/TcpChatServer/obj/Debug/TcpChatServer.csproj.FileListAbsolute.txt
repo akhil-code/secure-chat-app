@@ -1,0 +1,10 @@
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\bin\Debug\TcpChatServer.exe.config
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\bin\Debug\TcpChatServer.exe
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\bin\Debug\TcpChatServer.pdb
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\obj\Debug\TcpChatServer.csproj.AssemblyReference.cache
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\obj\Debug\TcpChatServer.Form1.resources
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\obj\Debug\TcpChatServer.Properties.Resources.resources
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\obj\Debug\TcpChatServer.csproj.GenerateResource.cache
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\obj\Debug\TcpChatServer.csproj.CoreCompileInputs.cache
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\obj\Debug\TcpChatServer.exe
+C:\UNT\5050-Applications of Cryptography Summer 2022\Projects\Project1\Chat System\TcpChatServer\TcpChatServer\obj\Debug\TcpChatServer.pdb
