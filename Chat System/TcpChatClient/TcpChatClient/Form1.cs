@@ -20,6 +20,8 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using System.IO;
+using System.Security.Cryptography;
+
 
 namespace TcpChatClient
 {
@@ -83,10 +85,27 @@ namespace TcpChatClient
 
                 lbl_status.Text = "Success - Connected to chat server";
                 setGUIAfterRegister();
+                
                 // Create streamreader and streamwriter
                 this.networkStream = new NetworkStream(tcpSocket);
-                this.streamReader = new StreamReader(networkStream);
-                this.streamWriter = new StreamWriter(networkStream);
+
+                // Crypto stream
+                Rijndael rijAlg = Rijndael.Create();
+                rijAlg.Mode = CipherMode.CBC;
+
+                rijAlg.Key = Convert.FromBase64String("3j6ctQUbkYfVJrdkkzROAApUcguxtP6fQ+UbhEhQmsY=");
+                rijAlg.IV = Convert.FromBase64String("vH3Az9+iXRv+9P67xBQXpw==");
+
+                // Writer
+                ICryptoTransform encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
+                CryptoStream cryptoStreamWriter = new CryptoStream(this.networkStream, encryptor, CryptoStreamMode.Write);
+
+                // Reader
+                ICryptoTransform decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
+                CryptoStream cryptoStreamReader = new CryptoStream(this.networkStream, decryptor, CryptoStreamMode.Read);
+
+                this.streamReader = new StreamReader(this.networkStream);
+                this.streamWriter = new StreamWriter(this.networkStream);
 
                 // Send computer name (NOTE: alternatively you can send the IP address)
                 streamWriter.WriteLine(txt_clientName.Text);

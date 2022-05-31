@@ -14,6 +14,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace TcpChatServer
 {
@@ -28,12 +29,30 @@ namespace TcpChatServer
         private StreamReader streamReader;
         private StreamWriter streamWriter;
         private NetworkStream networkStream;
+        private CryptoStream cryptoStreamWriter;
+        private CryptoStream cryptoStreamReader;
 
         public ChatClient(Socket socket, String id)
         {
             this.tcpSocket = socket;
             this.id = id;
             this.networkStream = new NetworkStream(socket);
+
+            // AES credentials.
+            Rijndael rijAlg = Rijndael.Create();
+            rijAlg.Mode = CipherMode.CBC;
+
+            rijAlg.Key = Convert.FromBase64String("3j6ctQUbkYfVJrdkkzROAApUcguxtP6fQ+UbhEhQmsY=");
+            rijAlg.IV = Convert.FromBase64String("vH3Az9+iXRv+9P67xBQXpw==");
+
+            // Writer
+            ICryptoTransform encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
+            this.cryptoStreamWriter = new CryptoStream(this.networkStream, encryptor, CryptoStreamMode.Write);
+            
+            // Reader
+            ICryptoTransform decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
+            this.cryptoStreamReader = new CryptoStream(this.networkStream, decryptor, CryptoStreamMode.Read);
+
             this.streamReader = new StreamReader(this.networkStream);
             this.streamWriter = new StreamWriter(this.networkStream);
         }
