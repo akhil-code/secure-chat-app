@@ -97,7 +97,7 @@ namespace TcpChatClient
 
                 rijAlg.Key = Convert.FromBase64String("3j6ctQUbkYfVJrdkkzROAApUcguxtP6fQ+UbhEhQmsY=");
                 rijAlg.IV = Convert.FromBase64String("vH3Az9+iXRv+9P67xBQXpw==");
-                rijAlg.Padding = PaddingMode.ISO10126;
+                rijAlg.Padding = PaddingMode.None;
 
 
                 // Writer
@@ -108,7 +108,7 @@ namespace TcpChatClient
                 ICryptoTransform decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
                 this.cryptoStreamReader = new CryptoStream(this.networkStream, decryptor, CryptoStreamMode.Read);
 
-                this.streamReader = new StreamReader(this.cryptoStreamReader);
+                this.streamReader = new CStreamReader(this.cryptoStreamReader);
                 this.streamWriter = new StreamWriter(this.networkStream);
 
                 // Send computer name (NOTE: alternatively you can send the IP address)
@@ -116,28 +116,9 @@ namespace TcpChatClient
                 streamWriter.Flush();
 
                 //participantName = streamReader.ReadLine(); // Get other computer's name
-
-                Console.WriteLine("Started reading the line");
-                MemoryStream memoryStream = new MemoryStream(1000);
-                int currByte = this.cryptoStreamReader.ReadByte();
-                while (currByte > 0) {
-                    memoryStream.WriteByte(Convert.ToByte(currByte));
-                    if (Convert.ToChar(currByte) == '\n') {
-                        break;
-                    }
-                    currByte = this.cryptoStreamReader.ReadByte();
-                }
-                Console.WriteLine(Encoding.Default.GetString(memoryStream.ToArray()));
-
-
                 lst_messageList.Items.Add(streamReader.ReadLine());
                 // Get the ID assigned by the server
                 id = streamReader.ReadLine();
-
-
-                // MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(id));
-
-
 
                 this.Text = txt_clientName.Text + "(ID:" + id + ") Chat Client";
                 // Get the avaiable room lists

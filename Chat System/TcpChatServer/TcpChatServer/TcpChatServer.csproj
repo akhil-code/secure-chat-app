@@ -52,6 +52,7 @@
     <Compile Include="ChatMessage.cs" />
     <Compile Include="ChatRoom.cs" />
     <Compile Include="ChatRoomCollection.cs" />
+    <Compile Include="CStreamReader.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
