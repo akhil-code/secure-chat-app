@@ -92,7 +92,7 @@ namespace TcpChatServer
                     dlgt = new MethodDelegate(this.ReceiveMessage);
 
                     // Send a greeting message to client name to other computer
-                    chatClient.StreamWriter.WriteLine("***Welcome to the chat server***");
+                    chatClient.StreamWriter.Write("***Welcome to the chat server***");
                     chatClient.StreamWriter.Flush();
 
                     // Get the client name

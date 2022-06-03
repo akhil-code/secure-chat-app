@@ -44,6 +44,7 @@ namespace TcpChatServer
 
             rijAlg.Key = Convert.FromBase64String("3j6ctQUbkYfVJrdkkzROAApUcguxtP6fQ+UbhEhQmsY=");
             rijAlg.IV = Convert.FromBase64String("vH3Az9+iXRv+9P67xBQXpw==");
+            rijAlg.Padding = PaddingMode.ISO10126;
 
             // Writer
             ICryptoTransform encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
@@ -54,7 +55,7 @@ namespace TcpChatServer
             this.cryptoStreamReader = new CryptoStream(this.networkStream, decryptor, CryptoStreamMode.Read);
 
             this.streamReader = new StreamReader(this.networkStream);
-            this.streamWriter = new StreamWriter(this.networkStream);
+            this.streamWriter = new StreamWriter(this.cryptoStreamWriter);
         }
 
         public String Name

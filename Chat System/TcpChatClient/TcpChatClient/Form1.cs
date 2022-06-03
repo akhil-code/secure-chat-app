@@ -33,6 +33,8 @@ namespace TcpChatClient
         StreamReader streamReader;
         StreamWriter streamWriter;
         NetworkStream networkStream;
+        private CryptoStream cryptoStreamWriter;
+        private CryptoStream cryptoStreamReader;
         delegate void MethodDelegate();
         MethodDelegate dlgt;
 
@@ -95,26 +97,47 @@ namespace TcpChatClient
 
                 rijAlg.Key = Convert.FromBase64String("3j6ctQUbkYfVJrdkkzROAApUcguxtP6fQ+UbhEhQmsY=");
                 rijAlg.IV = Convert.FromBase64String("vH3Az9+iXRv+9P67xBQXpw==");
+                rijAlg.Padding = PaddingMode.ISO10126;
+
 
                 // Writer
                 ICryptoTransform encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
-                CryptoStream cryptoStreamWriter = new CryptoStream(this.networkStream, encryptor, CryptoStreamMode.Write);
+                this.cryptoStreamWriter = new CryptoStream(this.networkStream, encryptor, CryptoStreamMode.Write);
 
                 // Reader
                 ICryptoTransform decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
-                CryptoStream cryptoStreamReader = new CryptoStream(this.networkStream, decryptor, CryptoStreamMode.Read);
+                this.cryptoStreamReader = new CryptoStream(this.networkStream, decryptor, CryptoStreamMode.Read);
 
-                this.streamReader = new StreamReader(this.networkStream);
+                this.streamReader = new StreamReader(this.cryptoStreamReader);
                 this.streamWriter = new StreamWriter(this.networkStream);
 
                 // Send computer name (NOTE: alternatively you can send the IP address)
                 streamWriter.WriteLine(txt_clientName.Text);
                 streamWriter.Flush();
+
                 //participantName = streamReader.ReadLine(); // Get other computer's name
+
+                Console.WriteLine("Started reading the line");
+                MemoryStream memoryStream = new MemoryStream(1000);
+                int currByte = this.cryptoStreamReader.ReadByte();
+                while (currByte > 0) {
+                    memoryStream.WriteByte(Convert.ToByte(currByte));
+                    if (Convert.ToChar(currByte) == '\n') {
+                        break;
+                    }
+                    currByte = this.cryptoStreamReader.ReadByte();
+                }
+                Console.WriteLine(Encoding.Default.GetString(memoryStream.ToArray()));
+
 
                 lst_messageList.Items.Add(streamReader.ReadLine());
                 // Get the ID assigned by the server
                 id = streamReader.ReadLine();
+
+
+                // MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(id));
+
+
 
                 this.Text = txt_clientName.Text + "(ID:" + id + ") Chat Client";
                 // Get the avaiable room lists
@@ -126,9 +149,10 @@ namespace TcpChatClient
                 // Begin a thread which will read the server's sent message
                 dlgt.BeginInvoke(new AsyncCallback(DoneReading), null);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 lbl_status.Text="Failure - Could not connect to chat server";
+                System.Console.WriteLine(e.Message);
             }
         }
 
